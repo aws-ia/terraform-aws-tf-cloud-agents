@@ -11,7 +11,7 @@ resource "tfe_agent_token" "ecs_agent_token" {
 }
 
 resource "aws_ssm_parameter" "agent_token" {
-  name        = "/tfc-agent-token/${var.hcp_terraform_org_name}/${var.name}"
+  name        = "/hcp-tf-token/${var.hcp_terraform_org_name}/${var.name}"
   description = "HCP Terraform agent token"
   type        = "SecureString"
   value       = tfe_agent_token.ecs_agent_token.token
@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           },
           {
             name  = "TFC_AGENT_NAME",
-            value = "tfc-agent-${var.name}"
+            value = "hcp-tf-agent-${var.name}"
           },
           {
             name  = "TFC_ADDRESS",
@@ -125,17 +125,20 @@ resource "aws_security_group" "hcp_terraform_agent" {
 }
 
 resource "aws_security_group_rule" "allow_egress" {
-  security_group_id = aws_security_group.hcp_terraform_agent.id
+  protocol          = "tcp"
   type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  for_each          = var.agent_egress_ports
+  from_port         = each.value
+  to_port           = each.value
+  cidr_blocks       = var.agent_cidr_blocks
+  security_group_id = aws_security_group.hcp_terraform_agent.id
 }
 
-## IAM
+#####################################################################################
+# IAM
 # Two roles are defined: the task execution role used during initialization,
 # and the task role which is assumed by the container(s).
+#####################################################################################
 
 data "aws_iam_policy_document" "agent_assume_role_policy" {
   statement {

@@ -24,7 +24,7 @@ locals {
 module "agent_pool" {
   source                    = "../../"
   name                      = local.name
-  hcp_terraform_org_name    = "tfc-integration-sandbox"
+  hcp_terraform_org_name    = var.hcp_terraform_org_name
   agent_image               = "hashicorp/tfc-agent:latest"
   use_spot_instances        = true
   agent_cpu                 = 512

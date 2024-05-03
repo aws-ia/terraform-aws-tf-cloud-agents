@@ -10,7 +10,9 @@
 | subnet_ids | IDs of the subnet(s) where agents can be deployed (public subnets required) | `list(string)` | n/a | yes |
 | vpc_id | ID of the VPC where the cluster is running. | `string` | n/a | yes |
 | agent_auto_update | Whether the agent should auto-update. Valid values are minor, patch, and disabled. | `string` | `"minor"` | no |
+| agent_cidr_blocks | CIDR blocks to allow the agent to communicate with the HCP Terraform instance. | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | agent_cpu | The CPU units allocated to the agent container(s). See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size | `number` | `256` | no |
+| agent_egress_ports | Egress ports to allow the agent to communicate with the HCP Terraform instance. | `set(string)` | <pre>[<br>  "443",<br>  "7146"<br>]</pre> | no |
 | agent_image | The Docker image to launch. | `string` | `"hashicorp/tfc-agent:latest"` | no |
 | agent_log_level | The logging verbosity for the agent. Valid values are trace, debug, info (default), warn, and error. | `string` | `"info"` | no |
 | agent_memory | The amount of memory, in MB, allocated to the agent container(s). | `number` | `512` | no |

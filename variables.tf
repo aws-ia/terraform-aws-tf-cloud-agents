@@ -70,6 +70,18 @@ variable "agent_auto_update" {
   }
 }
 
+variable "agent_egress_ports" {
+  type        = set(string)
+  description = "Egress ports to allow the agent to communicate with the HCP Terraform instance."
+  default     = ["443", "7146"]
+}
+
+variable "agent_cidr_blocks" {
+  type        = list(string)
+  description = "CIDR blocks to allow the agent to communicate with the HCP Terraform instance."
+  default     = ["0.0.0.0/0"] #HCP Terraform APIs ["75.2.98.97/32","99.83.150.238/32"]
+}
+
 variable "extra_env_vars" {
   type = list(object({
     name  = string
