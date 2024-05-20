@@ -102,7 +102,10 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
   }
 
   lifecycle {
-    ignore_changes = [desired_count]
+    postcondition {
+      condition     = self.desired_count == var.num_agents
+      error_message = "The ECS service desired count is not equal to the number of agents specified in the configuration."
+    }
   }
 
   tags = {
