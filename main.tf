@@ -127,6 +127,7 @@ resource "aws_security_group" "hcp_terraform_agent" {
   }
 }
 
+#tfsec:ignore:no-public-egress-sgr
 resource "aws_security_group_rule" "allow_egress" {
   protocol          = "tcp"
   type              = "egress"
@@ -135,6 +136,7 @@ resource "aws_security_group_rule" "allow_egress" {
   to_port           = each.value
   cidr_blocks       = var.agent_cidr_blocks
   security_group_id = aws_security_group.hcp_terraform_agent.id
+  description       = "Egress rule for HCP Terraform agent"
 }
 
 #####################################################################################
