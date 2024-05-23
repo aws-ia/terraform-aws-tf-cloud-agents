@@ -102,6 +102,12 @@ variable "cloudwatch_log_group_name" {
   description = "The name of the CloudWatch log group where agent logs will be sent."
 }
 
+variable "create_ecs_cluster" {
+  type        = bool
+  description = "Whether to create a new ECS cluster for the agent."
+  default     = true
+}
+
 variable "ecs_cluster_arn" {
   type        = string
   description = "ARN of the ECS cluster where the agent will be deployed."
@@ -109,6 +115,7 @@ variable "ecs_cluster_arn" {
     condition     = can(regex("^arn:aws[a-z-]*:ecs:", var.ecs_cluster_arn))
     error_message = "Must be a valid ECS cluster ARN."
   }
+  default = "arn:aws:ecs:us-east-2:000000000000:cluster/ecs-basic"
 }
 
 variable "use_spot_instances" {

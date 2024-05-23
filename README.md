@@ -25,7 +25,9 @@ This file will contain any instructional information about this module.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws | ~> 5.0 |
 
 ## Resources
 
@@ -52,7 +54,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#input\_cloudwatch\_log\_group\_name) | The name of the CloudWatch log group where agent logs will be sent. | `string` | n/a | yes |
-| <a name="input_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#input\_ecs\_cluster\_arn) | ARN of the ECS cluster where the agent will be deployed. | `string` | n/a | yes |
 | <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the TFC/TFE organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account. | `string` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of the subnet(s) where agents can be deployed (public subnets required) | `list(string)` | n/a | yes |
@@ -65,6 +66,8 @@ No modules.
 | <a name="input_agent_log_level"></a> [agent\_log\_level](#input\_agent\_log\_level) | The logging verbosity for the agent. Valid values are trace, debug, info (default), warn, and error. | `string` | `"info"` | no |
 | <a name="input_agent_memory"></a> [agent\_memory](#input\_agent\_memory) | The amount of memory, in MB, allocated to the agent container(s). | `number` | `512` | no |
 | <a name="input_agent_single_execution"></a> [agent\_single\_execution](#input\_agent\_single\_execution) | Whether to use single-execution mode. | `bool` | `true` | no |
+| <a name="input_create_ecs_cluster"></a> [create\_ecs\_cluster](#input\_create\_ecs\_cluster) | Whether to create a new ECS cluster for the agent. | `bool` | `true` | no |
+| <a name="input_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#input\_ecs\_cluster\_arn) | ARN of the ECS cluster where the agent will be deployed. | `string` | `"arn:aws:ecs:us-east-2:000000000000:cluster/ecs-basic"` | no |
 | <a name="input_extra_env_vars"></a> [extra\_env\_vars](#input\_extra\_env\_vars) | Extra environment variables to pass to the agent container. | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `[]` | no |
 | <a name="input_hcp_terraform_address"></a> [hcp\_terraform\_address](#input\_hcp\_terraform\_address) | The HTTPS address of the HCP Terraform or HCP Terraform enterprise instance. | `string` | `"https://app.terraform.io"` | no |
 | <a name="input_num_agents"></a> [num\_agents](#input\_num\_agents) | The number of agent containers to run. | `number` | `1` | no |
