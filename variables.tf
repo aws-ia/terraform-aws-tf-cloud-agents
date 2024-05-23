@@ -15,7 +15,7 @@ variable "hcp_terraform_address" {
 
 variable "hcp_terraform_org_name" {
   type        = string
-  description = "The name of the TFC/TFE organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
+  description = "The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
 }
 
 variable "agent_cpu" {
