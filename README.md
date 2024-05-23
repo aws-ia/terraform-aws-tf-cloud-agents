@@ -13,7 +13,6 @@ This file will contain any instructional information about this module.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.47.0 |
-| <a name="requirement_awscc"></a> [awscc](#requirement\_awscc) | >= 0.24.0 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.54 |
 
 ## Providers
