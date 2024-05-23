@@ -81,7 +81,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
 
 resource "aws_ecs_service" "hcp_terraform_agent" {
   name            = "hcp-tf-agent-${var.name}"
-  cluster         = var.ecs_cluster_arn
+  cluster         = var.create_ecs_cluster ? module.ecs_cluster[0].cluster_arn : var.ecs_cluster_arn
   task_definition = aws_ecs_task_definition.hcp_terraform_agent.arn
   desired_count   = var.num_agents
   propagate_tags  = "SERVICE"
@@ -137,6 +137,36 @@ resource "aws_security_group_rule" "allow_egress" {
   cidr_blocks       = var.agent_cidr_blocks
   security_group_id = aws_security_group.hcp_terraform_agent.id
   description       = "Egress rule for HCP Terraform agent"
+}
+
+#####################################################################################
+# ECS Cluster - Optional creation of an ECS cluster to run the HCP Terraform agent
+#####################################################################################
+
+module "ecs_cluster" {
+  count   = var.create_ecs_cluster ? 1 : 0
+  source  = "terraform-aws-modules/ecs/aws"
+  version = "~> 5.0"
+
+  cluster_name = var.name
+
+  fargate_capacity_providers = {
+    FARGATE = {
+      default_capacity_provider_strategy = {
+        weight = 50
+        base   = 20
+      }
+    }
+    FARGATE_SPOT = {
+      default_capacity_provider_strategy = {
+        weight = 50
+      }
+    }
+  }
+
+  tags = {
+    Name = var.name
+  }
 }
 
 #####################################################################################
