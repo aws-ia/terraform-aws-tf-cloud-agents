@@ -115,7 +115,7 @@ variable "ecs_cluster_arn" {
     condition     = can(regex("^arn:aws[a-z-]*:ecs:", var.ecs_cluster_arn))
     error_message = "Must be a valid ECS cluster ARN."
   }
-  default = "arn:aws:ecs:us-east-2:000000000000:cluster/ecs-basic"
+  default = "arn:aws:ecs:us-west-2:000000000000:cluster/ecs-basic"
 }
 
 variable "use_spot_instances" {
