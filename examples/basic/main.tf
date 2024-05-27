@@ -54,12 +54,3 @@ module "vpc" {
 
   tags = local.tags
 }
-
-#####################################################################################
-# ECS CLUSTER DEFINITION
-#####################################################################################
-
-resource "aws_cloudwatch_log_group" "cloudwatch" {
-  name              = "/ecs/hcp-terraform-agents/${local.name}"
-  retention_in_days = 7
-}

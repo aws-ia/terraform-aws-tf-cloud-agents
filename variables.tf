@@ -97,6 +97,18 @@ variable "num_agents" {
   default     = 1
 }
 
+variable "create_cloudwatch_log_group" {
+  type        = bool
+  description = "The name of the CloudWatch log group where agent logs will be sent."
+  default     = true
+}
+
+variable "cloudwatch_log_group_retention" {
+  type        = number
+  description = "The number of days to retain logs in the CloudWatch log group."
+  default     = 7
+}
+
 variable "cloudwatch_log_group_name" {
   type        = string
   description = "The name of the CloudWatch log group where agent logs will be sent."

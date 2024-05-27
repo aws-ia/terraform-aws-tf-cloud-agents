@@ -17,6 +17,11 @@ resource "aws_ssm_parameter" "agent_token" {
   value       = tfe_agent_token.ecs_agent_token.token
 }
 
+resource "aws_cloudwatch_log_group" "cloudwatch" {
+  name              = "/ecs/hcp-terraform-agents/${var.name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+}
+
 resource "aws_ecs_task_definition" "hcp_terraform_agent" {
   family                   = "hcp-tf-agent-${var.hcp_terraform_org_name}-${var.name}"
   cpu                      = var.agent_cpu
@@ -41,7 +46,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           logDriver : "awslogs",
           options : {
             awslogs-create-group : "true",
-            awslogs-group : var.cloudwatch_log_group_name
+            awslogs-group : create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
             awslogs-region : data.aws_region.current.name
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }
