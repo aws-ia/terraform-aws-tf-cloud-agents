@@ -1,0 +1,41 @@
+---
+name: Validate and test Terraform module
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "*.md"
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - "*.md"
+  workflow_dispatch:
+
+env:
+  TF_VERSION: "v1.8.4"
+
+jobs:
+    validate_tf:
+        permissions:
+          id-token: write
+          contents: read
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+            - uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: ${{env.TF_VERSION}}         
+            - name: terraform init
+              working-directory: ./
+              run: |
+                terraform init
+            - name: Terraform validate
+              working-directory: ./
+              id: validate
+              run: terraform validate -no-color
+            # - name: Terraform test
+            #   working-directory: ./
+            #   id: test
+            #   run: terraform test -no-color
