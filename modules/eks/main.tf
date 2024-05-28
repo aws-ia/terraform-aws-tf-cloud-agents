@@ -1,5 +1,5 @@
 data "aws_eks_cluster_auth" "this" {
-  name = var.create_eks_cluster ? module.eks.cluster_name : var.cluster_name
+  name = var.create_eks_cluster ? module.eks[0].cluster_name : var.cluster_name
 }
 
 data "aws_availability_zones" "available" {}
@@ -32,7 +32,7 @@ resource "helm_release" "vault" {
 module "eks" {
   count   = var.create_eks_cluster ? 1 : 0
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.6.0"
+  version = "20.12.0"
 
   cluster_name                   = var.cluster_name
   cluster_version                = var.cluster_version
