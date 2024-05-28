@@ -8,7 +8,7 @@ data "aws_availability_zones" "available" {}
 # HCP Terraform operator - Deploy the operator helm chart to the EKS cluster
 #####################################################################################
 
-resource "helm_release" "vault" {
+resource "helm_release" "hcp_tf_helm_config" {
   name             = try(var.hcp_tf_helm_config.name, "terraform-cloud-operator")
   namespace        = try(var.hcp_tf_helm_config.namespace, "terraform-cloud-operator")
   create_namespace = try(var.hcp_tf_helm_config.create_namespace, true)
