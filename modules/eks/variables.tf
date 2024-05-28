@@ -82,3 +82,9 @@ variable "cluster_certificate_authority_data" {
   description = "The base64 encoded certificate authority data for the EKS cluster"
   default     = "AAAAAA=="
 }
+
+variable "num_agents" {
+  type        = number
+  description = "Number of HCP Terraform agents to deploy"
+  default     = 1
+}

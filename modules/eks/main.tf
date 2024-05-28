@@ -9,14 +9,17 @@ data "aws_availability_zones" "available" {}
 #####################################################################################
 
 resource "helm_release" "vault" {
-  name             = try(var.hcp_tf_helm_config.name, "vault")
-  namespace        = try(var.hcp_tf_helm_config.namespace, "vault")
+  name             = try(var.hcp_tf_helm_config.name, "terraform-cloud-operator")
+  namespace        = try(var.hcp_tf_helm_config.namespace, "terraform-cloud-operator")
   create_namespace = try(var.hcp_tf_helm_config.create_namespace, true)
   description      = try(var.hcp_tf_helm_config.description, null)
-  chart            = "vault"
-  version          = try(var.hcp_tf_helm_config.version, "0.22.0")
+  chart            = "terraform-cloud-operator"
+  version          = try(var.hcp_tf_helm_config.version, "2.4.0")
   repository       = try(var.hcp_tf_helm_config.repository, "https://helm.releases.hashicorp.com")
-  values           = try(var.hcp_tf_helm_config.values, [file("${path.module}/vault-config.yml")])
+  values = try(var.hcp_tf_helm_config.values, [templatefile("${path.module}/config.tftpl", {
+    operator_replica_count = 1
+    agent_pool_workers     = var.num_agents
+  })])
 
   timeout           = try(var.hcp_tf_helm_config.timeout, 1200)
   devel             = try(var.hcp_tf_helm_config.devel, null)
