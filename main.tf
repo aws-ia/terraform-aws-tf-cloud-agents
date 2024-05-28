@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           logDriver : "awslogs",
           options : {
             awslogs-create-group : "true",
-            awslogs-group : create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
+            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
             awslogs-region : data.aws_region.current.name
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }

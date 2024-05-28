@@ -112,6 +112,7 @@ variable "cloudwatch_log_group_retention" {
 variable "cloudwatch_log_group_name" {
   type        = string
   description = "The name of the CloudWatch log group where agent logs will be sent."
+  default     = "/ecs/hcp-terraform-agent"
 }
 
 variable "create_ecs_cluster" {

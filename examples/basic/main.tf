@@ -22,16 +22,15 @@ locals {
 #####################################################################################
 
 module "agent_pool" {
-  source                    = "../../"
-  name                      = local.name
-  hcp_terraform_org_name    = var.hcp_terraform_org_name
-  agent_image               = "hashicorp/tfc-agent:latest"
-  use_spot_instances        = true
-  agent_cpu                 = 512
-  agent_memory              = 1024
-  vpc_id                    = module.vpc.vpc_id
-  subnet_ids                = module.vpc.private_subnets
-  cloudwatch_log_group_name = aws_cloudwatch_log_group.cloudwatch.name
+  source                 = "../../"
+  name                   = local.name
+  hcp_terraform_org_name = var.hcp_terraform_org_name
+  agent_image            = "hashicorp/tfc-agent:latest"
+  use_spot_instances     = true
+  agent_cpu              = 512
+  agent_memory           = 1024
+  vpc_id                 = module.vpc.vpc_id
+  subnet_ids             = module.vpc.private_subnets
 }
 
 #####################################################################################
