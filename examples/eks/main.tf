@@ -21,18 +21,6 @@ locals {
 # MODULE INVOCATION
 #####################################################################################
 
-// TODO: remove
-terraform {
-  cloud {
-    hostname     = "app.terraform.io"
-    organization = "tfc-integration-sandbox"
-    workspaces {
-      name    = "hcp-terraform-agent-eks"
-      project = "AWS"
-    }
-  }
-}
-
 module "agent_pool" {
   source          = "../../modules/eks"
   region          = local.region
