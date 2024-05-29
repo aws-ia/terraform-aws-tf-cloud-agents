@@ -98,7 +98,7 @@ variable "num_agents" {
 #     "namespaces" = [ "default", "terraform-cloud-operator"]
 #   }
 # }
-variable "eks_access_entry_arns" {
+variable "eks_access_entry_map" {
   type = map(object({
     policy_arn = string,
     type       = string
