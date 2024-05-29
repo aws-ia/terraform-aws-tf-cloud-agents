@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {}
 locals {
   region   = "us-west-2"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-  name     = "eks-${basename(path.cwd)}"
+  name     = "hcp-tf-agent-${basename(path.cwd)}"
   vpc_cidr = "10.0.0.0/16"
   tags = {
     Terraform   = "true"
