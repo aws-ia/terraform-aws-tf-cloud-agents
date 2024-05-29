@@ -22,11 +22,12 @@ locals {
 #####################################################################################
 
 module "agent_pool" {
-  source          = "../../modules/eks"
-  region          = local.region
-  vpc_id          = module.vpc.vpc_id
-  public_subnets  = module.vpc.public_subnets
-  private_subnets = module.vpc.private_subnets
+  source                = "../../modules/eks"
+  region                = local.region
+  vpc_id                = module.vpc.vpc_id
+  public_subnets        = module.vpc.public_subnets
+  private_subnets       = module.vpc.private_subnets
+  eks_access_entry_arns = var.eks_access_entry_arns # TODO: remove this when the module is updated
 }
 
 #####################################################################################

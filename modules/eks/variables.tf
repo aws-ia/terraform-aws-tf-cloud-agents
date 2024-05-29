@@ -88,3 +88,9 @@ variable "num_agents" {
   description = "Number of HCP Terraform agents to deploy"
   default     = 1
 }
+
+variable "eks_access_entry_arns" {
+  type        = set(string)
+  description = "ARNs of the IAM roles that need access to the EKS cluster"
+  default     = []
+}
