@@ -152,6 +152,6 @@ module "eks" {
 resource "aws_eks_access_entry" "example" {
   for_each      = var.eks_access_entry_arns
   cluster_name  = var.create_eks_cluster ? module.eks[0].cluster_name : var.cluster_name
-  principal_arn = var.eks_access_entry_arns[each.value]
+  principal_arn = each.value
   depends_on    = [module.eks]
 }
