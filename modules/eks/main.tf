@@ -152,6 +152,18 @@ module "eks" {
 resource "aws_eks_access_entry" "example" {
   for_each      = var.eks_access_entry_arns
   cluster_name  = var.create_eks_cluster ? module.eks[0].cluster_name : var.cluster_name
-  principal_arn = each.value
+  principal_arn = each.key
   depends_on    = [module.eks]
+}
+
+resource "aws_eks_access_policy_association" "example" {
+  cluster_name  = var.create_eks_cluster ? module.eks[0].cluster_name : var.cluster_name
+  for_each      = var.eks_access_entry_arns
+  principal_arn = each.key
+  policy_arn    = each.value["policy_arn"]
+
+  access_scope {
+    type       = each.value["type"]
+    namespaces = each.value["namespaces"]
+  }
 }

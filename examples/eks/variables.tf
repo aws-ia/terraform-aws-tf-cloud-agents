@@ -4,6 +4,10 @@ variable "hcp_terraform_org_name" {
 }
 
 variable "eks_access_entry_arns" {
-  type        = set(string)
-  description = "The ARNs of the HCP Terraform agents to grant access to the EKS cluster"
+  type = map(object({
+    policy_arn = string,
+    type       = string
+    namespaces = list(string)
+  }))
+  description = "ARNs of the IAM roles that need access to the EKS cluster"
 }

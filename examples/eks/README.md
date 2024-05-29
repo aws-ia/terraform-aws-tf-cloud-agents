@@ -29,7 +29,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_eks_access_entry_arns"></a> [eks\_access\_entry\_arns](#input\_eks\_access\_entry\_arns) | The ARNs of the HCP Terraform agents to grant access to the EKS cluster | `set(string)` | n/a | yes |
+| <a name="input_eks_access_entry_arns"></a> [eks\_access\_entry\_arns](#input\_eks\_access\_entry\_arns) | ARNs of the IAM roles that need access to the EKS cluster | <pre>map(object({<br>    policy_arn = string,<br>    type       = string<br>    namespaces = list(string)<br>  }))</pre> | n/a | yes |
 | <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the HCP Terraform organization | `string` | n/a | yes |
 
 ## Outputs

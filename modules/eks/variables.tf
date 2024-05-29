@@ -89,8 +89,21 @@ variable "num_agents" {
   default     = 1
 }
 
+# An example map of IAM role ARNs that need access to the EKS cluster
+# {
+#   "arn:aws:sts::000000000000:assumed-role/aws_user" =
+#   {
+#     "policy_arn" = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy",
+#     "type"       = "namespace",
+#     "namespaces" = [ "default", "terraform-cloud-operator"]
+#   }
+# }
 variable "eks_access_entry_arns" {
-  type        = set(string)
+  type = map(object({
+    policy_arn = string,
+    type       = string
+    namespaces = list(string)
+  }))
   description = "ARNs of the IAM roles that need access to the EKS cluster"
-  default     = []
+  default     = {}
 }
