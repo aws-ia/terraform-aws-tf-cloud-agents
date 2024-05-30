@@ -33,7 +33,6 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the HCP Terraform organization | `string` | n/a | yes |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the EKS cluster | `string` | `"hcp-terraform-agent"` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes version to use for EKS Cluster | `string` | `"1.30"` | no |
 | <a name="input_eks_access_entry_map"></a> [eks\_access\_entry\_map](#input\_eks\_access\_entry\_map) | ARNs of the IAM roles that need access to the EKS cluster | <pre>map(object({<br>    policy_arn = string,<br>    type       = string<br>    namespaces = list(string)<br>  }))</pre> | `{}` | no |
 | <a name="input_instance_types"></a> [instance\_types](#input\_instance\_types) | Instance types for the EKS managed node group | `list(string)` | <pre>[<br>  "t3.medium",<br>  "t3a.medium"<br>]</pre> | no |

@@ -43,7 +43,7 @@ variable "private_subnets" {
 variable "cluster_name" {
   type        = string
   description = "Name of the EKS cluster"
-  default     = ""
+  default     = "hcp-terraform-agent"
 }
 
 variable "instance_types" {

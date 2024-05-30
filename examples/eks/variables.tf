@@ -22,12 +22,6 @@ variable "eks_access_entry_map" {
   default     = {}
 }
 
-variable "cluster_name" {
-  type        = string
-  description = "Name of the EKS cluster"
-  default     = "hcp-terraform-agent"
-}
-
 variable "cluster_version" {
   type        = string
   description = "Kubernetes version to use for EKS Cluster"
