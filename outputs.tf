@@ -1,11 +1,11 @@
 output "agent_pool_name" {
   description = "Name of the HCP Terraform agent pool."
-  value       = tfe_agent_pool.ecs_agent_pool.name
+  value       = try(tfe_agent_pool.ecs_agent_pool[0].name, var.tfe_agent_pool_name)
 }
 
 output "agent_pool_id" {
   description = "ID of the HCP Terraform agent pool."
-  value       = tfe_agent_pool.ecs_agent_pool.id
+  value       = try(tfe_agent_pool.ecs_agent_pool[0].id, null)
 }
 
 output "ecs_service_arn" {

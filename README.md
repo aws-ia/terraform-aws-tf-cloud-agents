@@ -65,10 +65,13 @@ No modules.
 | <a name="input_agent_log_level"></a> [agent\_log\_level](#input\_agent\_log\_level) | The logging verbosity for the agent. Valid values are trace, debug, info (default), warn, and error. | `string` | `"info"` | no |
 | <a name="input_agent_memory"></a> [agent\_memory](#input\_agent\_memory) | The amount of memory, in MB, allocated to the agent container(s). | `number` | `512` | no |
 | <a name="input_agent_single_execution"></a> [agent\_single\_execution](#input\_agent\_single\_execution) | Whether to use single-execution mode. | `bool` | `true` | no |
+| <a name="input_create_tfe_agent_pool"></a> [create\_tfe\_agent\_pool](#input\_create\_tfe\_agent\_pool) | Option to omit agent pool/token creation | `bool` | `true` | no |
 | <a name="input_extra_env_vars"></a> [extra\_env\_vars](#input\_extra\_env\_vars) | Extra environment variables to pass to the agent container. | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `[]` | no |
 | <a name="input_hcp_terraform_address"></a> [hcp\_terraform\_address](#input\_hcp\_terraform\_address) | The HTTPS address of the HCP Terraform or HCP Terraform enterprise instance. | `string` | `"https://app.terraform.io"` | no |
 | <a name="input_num_agents"></a> [num\_agents](#input\_num\_agents) | The number of agent containers to run. | `number` | `1` | no |
 | <a name="input_task_policy_arns"></a> [task\_policy\_arns](#input\_task\_policy\_arns) | ARN(s) of IAM policies to attach to the agent task. Determines what actions the agent can take without requiring additional AWS credentials. | `list(string)` | `[]` | no |
+| <a name="input_tfe_agent_pool_name"></a> [tfe\_agent\_pool\_name](#input\_tfe\_agent\_pool\_name) | Terraform agent pool name to be used when agent creation is omitted | `string` | `""` | no |
+| <a name="input_tfe_agent_token"></a> [tfe\_agent\_token](#input\_tfe\_agent\_token) | Terraform agent token to be used when agent creation is omitted | `string` | `""` | no |
 | <a name="input_use_spot_instances"></a> [use\_spot\_instances](#input\_use\_spot\_instances) | Whether to use Fargate Spot instances. | `bool` | `false` | no |
 
 ## Outputs

@@ -142,3 +142,22 @@ variable "task_policy_arns" {
   description = "ARN(s) of IAM policies to attach to the agent task. Determines what actions the agent can take without requiring additional AWS credentials."
   default     = []
 }
+
+variable "create_tfe_agent_pool" {
+  type        = bool
+  default     = true
+  description = "Option to omit agent pool/token creation"
+}
+
+variable "tfe_agent_token" {
+  type        = string
+  default     = ""
+  description = "Terraform agent token to be used when agent creation is omitted"
+  sensitive   = true
+}
+
+variable "tfe_agent_pool_name" {
+  type        = string
+  default     = ""
+  description = "Terraform agent pool name to be used when agent creation is omitted"
+}
