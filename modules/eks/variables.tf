@@ -64,12 +64,12 @@ variable "volume_type" {
   default     = "gp2"
 }
 
-variable "cluster_endpoint_url" {
+variable "cluster_endpoint" {
   type        = string
   description = "URL of the EKS cluster endpoint"
   default     = "https://example.aws-eks-cluster.com"
   validation {
-    condition     = startswith(var.cluster_endpoint_url, "https://")
+    condition     = startswith(var.cluster_endpoint, "https://")
     error_message = "The address must start with 'https://'"
   }
 }
