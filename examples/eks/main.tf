@@ -27,9 +27,9 @@ module "agent_pool" {
   source                             = "../../modules/eks"
   region                             = local.region
   create_eks_cluster                 = false
-  cluster_name                       = module.eks[0].cluster_name
-  cluster_endpoint_url               = module.eks[0].cluster_endpoint_url
-  cluster_certificate_authority_data = module.eks[0].cluster_certificate_authority_data
+  cluster_name                       = module.eks.cluster_name
+  cluster_endpoint_url               = module.eks.cluster_endpoint_url
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
 }
 
 #####################################################################################

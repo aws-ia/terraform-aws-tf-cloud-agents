@@ -111,13 +111,13 @@ module "eks" {
 
 resource "aws_eks_access_entry" "example" {
   for_each      = var.eks_access_entry_map
-  cluster_name  = module.eks[0].cluster_name
+  cluster_name  = module.eks.cluster_name
   principal_arn = each.key
   depends_on    = [module.eks]
 }
 
 resource "aws_eks_access_policy_association" "example" {
-  cluster_name  = module.eks[0].cluster_name
+  cluster_name  = module.eks.cluster_name
   for_each      = var.eks_access_entry_map
   principal_arn = each.key
   policy_arn    = each.value["policy_arn"]
