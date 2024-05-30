@@ -4,12 +4,6 @@ variable "cluster_version" {
   default     = "1.30"
 }
 
-variable "namespace" {
-  type        = string
-  description = "Kubernetes Namespace to deploy HCP Terraform agents"
-  default     = "hcp-terraform"
-}
-
 variable "hcp_tf_helm_config" {
   description = "Helm configuration for the HCP Terraform agent"
   type        = any

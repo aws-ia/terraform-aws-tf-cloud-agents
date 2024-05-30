@@ -22,12 +22,16 @@ locals {
 #####################################################################################
 
 module "agent_pool" {
-  source               = "../../modules/eks"
-  region               = local.region
-  vpc_id               = module.vpc.vpc_id
-  public_subnets       = module.vpc.public_subnets
-  private_subnets      = module.vpc.private_subnets
-  eks_access_entry_map = var.eks_access_entry_map
+  source                             = "../../modules/eks"
+  region                             = local.region
+  vpc_id                             = module.vpc.vpc_id
+  public_subnets                     = module.vpc.public_subnets
+  private_subnets                    = module.vpc.private_subnets
+  eks_access_entry_map               = var.eks_access_entry_map
+  create_eks_cluster                 = false
+  cluster_name                       = module.eks[0].cluster_name
+  cluster_endpoint_url               = module.eks[0].cluster_endpoint_url
+  cluster_certificate_authority_data = module.eks[0].cluster_certificate_authority_data
 }
 
 #####################################################################################
