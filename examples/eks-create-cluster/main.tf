@@ -24,12 +24,12 @@ locals {
 # If the EKS cluster does not exist, the module can create it, needs the VPC and subnets
 # Else if the EKS cluster exists, the module needs cluster name, endpoint and CA
 module "agent_pool" {
-  source                             = "../../modules/eks"
-  region                             = local.region
-  create_eks_cluster                 = false
-  cluster_name                       = module.eks[0].cluster_name
-  cluster_endpoint_url               = module.eks[0].cluster_endpoint_url
-  cluster_certificate_authority_data = module.eks[0].cluster_certificate_authority_data
+  source             = "../../modules/eks"
+  region             = local.region
+  create_eks_cluster = true
+  vpc_id             = module.vpc.vpc_id
+  public_subnets     = module.vpc.public_subnets
+  private_subnets    = module.vpc.private_subnets
 }
 
 #####################################################################################

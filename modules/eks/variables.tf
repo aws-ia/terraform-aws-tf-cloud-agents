@@ -25,22 +25,25 @@ variable "region" {
 variable "vpc_id" {
   type        = string
   description = "VPC ID where the EKS cluster will be deployed."
+  default     = ""
 }
 
 variable "public_subnets" {
   type        = list(string)
   description = "Public subnets where the EKS cluster will be deployed."
+  default     = []
 }
 
 variable "private_subnets" {
   type        = list(string)
   description = "Private subnets where the EKS cluster will be deployed."
+  default     = []
 }
 
 variable "cluster_name" {
   type        = string
   description = "Name of the EKS cluster"
-  default     = "hcp-terraform-agent"
+  default     = ""
 }
 
 variable "instance_types" {
@@ -75,6 +78,10 @@ variable "cluster_certificate_authority_data" {
   type        = string
   description = "The base64 encoded certificate authority data for the EKS cluster"
   default     = "AAAAAA=="
+  validation {
+    condition     = length(var.cluster_certificate_authority_data) > 0
+    error_message = "The cluster_certificate_authority_data must not be empty"
+  }
 }
 
 variable "num_agents" {

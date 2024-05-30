@@ -7,8 +7,8 @@ module "eks" {
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
 
-  vpc_id     = module.vpc.default_vpc_id
-  subnet_ids = module.vpc.default_vpc_public_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.public_subnets
 
   cluster_addons = {
     coredns = {
@@ -36,7 +36,7 @@ module "eks" {
       name            = "managed_node_group"
       use_name_prefix = true
 
-      subnet_ids = module.vpc.default_vpc_private_subnets
+      subnet_ids = module.vpc.private_subnets
 
       min_size     = 2
       max_size     = 2
