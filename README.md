@@ -13,7 +13,6 @@ This file will contain any instructional information about this module.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.47.0 |
-| <a name="requirement_awscc"></a> [awscc](#requirement\_awscc) | >= 0.24.0 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.54 |
 
 ## Providers
@@ -54,7 +53,13 @@ This file will contain any instructional information about this module.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+<<<<<<< ecs
 | <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the TFC/TFE organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account. | `string` | n/a | yes |
+=======
+| <a name="input_cloudwatch_log_group_name"></a> [cloudwatch\_log\_group\_name](#input\_cloudwatch\_log\_group\_name) | The name of the CloudWatch log group where agent logs will be sent. | `string` | n/a | yes |
+| <a name="input_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#input\_ecs\_cluster\_arn) | ARN of the ECS cluster where the agent will be deployed. | `string` | n/a | yes |
+| <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account. | `string` | n/a | yes |
+>>>>>>> main
 | <a name="input_name"></a> [name](#input\_name) | A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account. | `string` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of the subnet(s) where agents can be deployed (public subnets required) | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC where the cluster is running. | `string` | n/a | yes |

@@ -1,10 +1,10 @@
 output "agent_pool_name" {
-  description = "Name of the TFC agent pool."
+  description = "Name of the HCP Terraform or HCP Terraform Enterprise agent pool."
   value       = module.agent_pool.agent_pool_name
 }
 
 output "agent_pool_id" {
-  description = "ID of the TFC agent pool."
+  description = "ID of the HCP Terraform or HCP Terraform Enterprise agent pool."
   value       = module.agent_pool.agent_pool_id
 }
 
