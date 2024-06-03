@@ -15,7 +15,7 @@ variable "hcp_terraform_address" {
 
 variable "hcp_terraform_org_name" {
   type        = string
-  description = "The name of the TFC/TFE organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
+  description = "The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
 }
 
 variable "agent_cpu" {
@@ -97,9 +97,28 @@ variable "num_agents" {
   default     = 1
 }
 
+variable "create_cloudwatch_log_group" {
+  type        = bool
+  description = "The name of the CloudWatch log group where agent logs will be sent."
+  default     = true
+}
+
+variable "cloudwatch_log_group_retention" {
+  type        = number
+  description = "The number of days to retain logs in the CloudWatch log group."
+  default     = 7
+}
+
 variable "cloudwatch_log_group_name" {
   type        = string
   description = "The name of the CloudWatch log group where agent logs will be sent."
+  default     = "/ecs/hcp-terraform-agent"
+}
+
+variable "create_ecs_cluster" {
+  type        = bool
+  description = "Whether to create a new ECS cluster for the agent."
+  default     = true
 }
 
 variable "ecs_cluster_arn" {
@@ -109,6 +128,7 @@ variable "ecs_cluster_arn" {
     condition     = can(regex("^arn:aws[a-z-]*:ecs:", var.ecs_cluster_arn))
     error_message = "Must be a valid ECS cluster ARN."
   }
+  default = "arn:aws:ecs:us-west-2:000000000000:cluster/ecs-basic"
 }
 
 variable "use_spot_instances" {

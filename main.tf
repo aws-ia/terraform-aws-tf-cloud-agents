@@ -19,6 +19,11 @@ resource "aws_ssm_parameter" "agent_token" {
   value       = var.create_tfe_agent_pool ? tfe_agent_token.ecs_agent_token[0].token : var.tfe_agent_token
 }
 
+resource "aws_cloudwatch_log_group" "cloudwatch" {
+  name              = "/ecs/hcp-terraform-agents/${var.name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+}
+
 resource "aws_ecs_task_definition" "hcp_terraform_agent" {
   family                   = "hcp-tf-agent-${var.hcp_terraform_org_name}-${var.name}"
   cpu                      = var.agent_cpu
@@ -43,7 +48,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           logDriver : "awslogs",
           options : {
             awslogs-create-group : "true",
-            awslogs-group : var.cloudwatch_log_group_name
+            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
             awslogs-region : data.aws_region.current.name
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }
@@ -83,7 +88,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
 
 resource "aws_ecs_service" "hcp_terraform_agent" {
   name            = "hcp-tf-agent-${var.name}"
-  cluster         = var.ecs_cluster_arn
+  cluster         = var.create_ecs_cluster ? module.ecs_cluster[0].cluster_arn : var.ecs_cluster_arn
   task_definition = aws_ecs_task_definition.hcp_terraform_agent.arn
   desired_count   = var.num_agents
   propagate_tags  = "SERVICE"
@@ -139,6 +144,36 @@ resource "aws_security_group_rule" "allow_egress" {
   cidr_blocks       = var.agent_cidr_blocks
   security_group_id = aws_security_group.hcp_terraform_agent.id
   description       = "Egress rule for HCP Terraform agent"
+}
+
+#####################################################################################
+# ECS Cluster - Optional creation of an ECS cluster to run the HCP Terraform agent
+#####################################################################################
+
+module "ecs_cluster" {
+  count   = var.create_ecs_cluster ? 1 : 0
+  source  = "terraform-aws-modules/ecs/aws"
+  version = "~> 5.0"
+
+  cluster_name = var.name
+
+  fargate_capacity_providers = {
+    FARGATE = {
+      default_capacity_provider_strategy = {
+        weight = 50
+        base   = 20
+      }
+    }
+    FARGATE_SPOT = {
+      default_capacity_provider_strategy = {
+        weight = 50
+      }
+    }
+  }
+
+  tags = {
+    Name = var.name
+  }
 }
 
 #####################################################################################
