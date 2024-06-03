@@ -1,12 +1,14 @@
 data "aws_region" "current" {}
 
 resource "tfe_agent_pool" "ecs_agent_pool" {
+  count        = var.create_tfe_agent_pool ? 1 : 0
   name         = "${var.name}-agent-pool"
   organization = var.hcp_terraform_org_name
 }
 
 resource "tfe_agent_token" "ecs_agent_token" {
-  agent_pool_id = tfe_agent_pool.ecs_agent_pool.id
+  count         = var.create_tfe_agent_pool ? 1 : 0
+  agent_pool_id = tfe_agent_pool.ecs_agent_pool[0].id
   description   = "${var.name}-agent-token"
 }
 
@@ -14,7 +16,7 @@ resource "aws_ssm_parameter" "agent_token" {
   name        = "/hcp-tf-token/${var.hcp_terraform_org_name}/${var.name}"
   description = "HCP Terraform agent token"
   type        = "SecureString"
-  value       = tfe_agent_token.ecs_agent_token.token
+  value       = var.create_tfe_agent_pool ? tfe_agent_token.ecs_agent_token[0].token : var.tfe_agent_token
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
