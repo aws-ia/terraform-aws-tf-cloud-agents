@@ -5,7 +5,7 @@ variable "name" {
 
 variable "hcp_terraform_address" {
   type        = string
-  description = "The HTTPS address of the HCP Terraform or HCP Terraform enterprise instance."
+  description = "The HTTPS address of the HCP Terraform or HCP Terraform Enterprise instance."
   default     = "https://app.terraform.io"
   validation {
     condition     = startswith(var.hcp_terraform_address, "https://")
@@ -15,7 +15,7 @@ variable "hcp_terraform_address" {
 
 variable "hcp_terraform_org_name" {
   type        = string
-  description = "The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
+  description = "The name of the HCP Terraform or HCP Terraform Enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
 }
 
 variable "agent_cpu" {
@@ -99,7 +99,7 @@ variable "num_agents" {
 
 variable "create_cloudwatch_log_group" {
   type        = bool
-  description = "The name of the CloudWatch log group where agent logs will be sent."
+  description = "Whether the CloudWatch log group should be created."
   default     = true
 }
 
@@ -166,7 +166,7 @@ variable "task_policy_arns" {
 variable "create_tfe_agent_pool" {
   type        = bool
   default     = true
-  description = "Option to omit agent pool/token creation"
+  description = "Whether to omit agent pool/token creation"
 }
 
 variable "tfe_agent_token" {
