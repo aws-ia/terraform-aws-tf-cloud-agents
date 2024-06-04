@@ -6,6 +6,7 @@
 echo "Executing Pre-Entrypoint Helpers"
 
 #********** TFC Env Vars *************
+echo "Load env vars"
 export AWS_DEFAULT_REGION=us-east-1
 export TFE_TOKEN=`aws secretsmanager get-secret-value --secret-id abp/hcp/token | jq -r ".SecretString"`
 
