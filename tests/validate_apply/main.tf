@@ -28,13 +28,14 @@ resource "tfe_workspace_settings" "test" {
 }
 
 resource "tfe_workspace_run" "test" {
+  depends_on   = [tfe_workspace_settings.test]
   workspace_id = tfe_workspace.test.id
 
   apply {
     manual_confirm    = false
     wait_for_run      = true
-    retry_attempts    = 0
-    retry_backoff_min = 1
+    retry_attempts    = 3
+    retry_backoff_min = 3
   }
 
   destroy {
@@ -43,4 +44,10 @@ resource "tfe_workspace_run" "test" {
     retry_attempts    = 3
     retry_backoff_min = 10
   }
+}
+
+data "tfe_workspace" "test" {
+  depends_on   = [tfe_workspace_run.test]
+  name         = tfe_workspace.test.name
+  organization = data.tfe_organization.test.name
 }
