@@ -28,7 +28,7 @@ module "agent_pool" {
   agent_image            = "hashicorp/tfc-agent:latest"
   use_spot_instances     = true
   agent_cpu              = 512
-  agent_memory           = 1024
+  agent_memory           = 2048
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.vpc.private_subnets
 }

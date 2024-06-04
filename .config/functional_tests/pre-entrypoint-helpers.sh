@@ -7,7 +7,7 @@ echo "Executing Pre-Entrypoint Helpers"
 
 #********** TFC Env Vars *************
 echo "Load env vars"
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION=us-west-2
 export TFE_TOKEN=`aws secretsmanager get-secret-value --secret-id abp/hcp/token | jq -r ".SecretString"`
 
 #********** Get tfvars from SSM *************
@@ -17,4 +17,11 @@ aws ssm get-parameter \
   --with-decryption \
   --query "Parameter.Value" \
   --output "text" \
-  --region "us-east-1" >> ./tests/terraform.auto.tfvars
+  --region "us-west-2" > ./tests/terraform.auto.tfvars
+
+aws ssm get-parameter \
+  --name "/abp/hcp/tests/setup/terraform_test.tfvars" \
+  --with-decryption \
+  --query "Parameter.Value" \
+  --output "text" \
+  --region "us-west-2" > ./tests/setup/terraform.auto.tfvars
