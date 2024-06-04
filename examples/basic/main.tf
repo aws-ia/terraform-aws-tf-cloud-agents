@@ -32,7 +32,7 @@ module "agent_pool" {
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.vpc.private_subnets
   task_policy_arns       = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-  tags = local.tags
+  tags                   = local.tags
 }
 
 #####################################################################################
