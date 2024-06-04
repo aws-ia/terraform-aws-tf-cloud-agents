@@ -1,32 +1,31 @@
 <!-- BEGIN_TF_DOCS -->
-# Terraform Module Project
 
-:no\_entry\_sign: Do not edit this readme.md file. To learn how to change this content and work with this repository, refer to CONTRIBUTING.md
+# terraform-aws-tf-cloud-agents
 
-## Readme Content
+Creates self hosted Terraform Cloud agents on AWS. Using this Terraform module you can quickly deploy agent pools for your Terraform Cloud workflows.
 
-This file will contain any instructional information about this module.
+HCP Terraform allows you to manage isolated, private, or on-premises infrastructure using self-hosted HCP Terraform agents. The agent polls HCP Terraform or Terraform Enterprise for any changes to your configuration and executes the changes locally, so you do not need to allow public ingress traffic to your resources. Agents allow you to control infrastructure in private environments without modifying your network perimeter.
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.47.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.54 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.47.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0.0 |
 | <a name="provider_tfe"></a> [tfe](#provider\_tfe) | >= 0.54 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws | ~> 5.0 |
+| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | git::https://github.com/terraform-aws-modules/terraform-aws-ecs | 6b52c965734d95767d8e20d965afcd0db29dae5e |
 
 ## Resources
 

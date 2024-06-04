@@ -1,7 +1,11 @@
+### General
+
 variable "name" {
   type        = string
   description = "A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account."
 }
+
+### HashiCorp Cloud Platform
 
 variable "hcp_terraform_address" {
   type        = string
@@ -17,6 +21,27 @@ variable "hcp_terraform_org_name" {
   type        = string
   description = "The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
 }
+
+variable "create_tfe_agent_pool" {
+  type        = bool
+  default     = true
+  description = "Option to omit agent pool/token creation"
+}
+
+variable "tfe_agent_token" {
+  type        = string
+  default     = ""
+  description = "Terraform agent token to be used when agent creation is omitted"
+  sensitive   = true
+}
+
+variable "tfe_agent_pool_name" {
+  type        = string
+  default     = ""
+  description = "Terraform agent pool name to be used when agent creation is omitted"
+}
+
+### Terraform Agent
 
 variable "agent_cpu" {
   type        = number
@@ -97,6 +122,8 @@ variable "num_agents" {
   default     = 1
 }
 
+### CloudWatch configuration
+
 variable "create_cloudwatch_log_group" {
   type        = bool
   description = "The name of the CloudWatch log group where agent logs will be sent."
@@ -114,6 +141,8 @@ variable "cloudwatch_log_group_name" {
   description = "The name of the CloudWatch log group where agent logs will be sent."
   default     = "/ecs/hcp-terraform-agent"
 }
+
+### ECS Cluster configuration
 
 variable "create_ecs_cluster" {
   type        = bool
@@ -161,23 +190,4 @@ variable "task_policy_arns" {
   type        = list(string)
   description = "ARN(s) of IAM policies to attach to the agent task. Determines what actions the agent can take without requiring additional AWS credentials."
   default     = []
-}
-
-variable "create_tfe_agent_pool" {
-  type        = bool
-  default     = true
-  description = "Option to omit agent pool/token creation"
-}
-
-variable "tfe_agent_token" {
-  type        = string
-  default     = ""
-  description = "Terraform agent token to be used when agent creation is omitted"
-  sensitive   = true
-}
-
-variable "tfe_agent_pool_name" {
-  type        = string
-  default     = ""
-  description = "Terraform agent pool name to be used when agent creation is omitted"
 }

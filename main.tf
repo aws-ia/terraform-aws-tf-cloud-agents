@@ -20,7 +20,7 @@ resource "aws_ssm_parameter" "agent_token" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
-  name              = "/ecs/hcp-terraform-agents/${var.name}"
+  name              = "/hcp/hcp-terraform-agents/ecs/${var.name}"
   retention_in_days = var.cloudwatch_log_group_retention
 }
 
@@ -151,9 +151,8 @@ resource "aws_security_group_rule" "allow_egress" {
 #####################################################################################
 
 module "ecs_cluster" {
-  count   = var.create_ecs_cluster ? 1 : 0
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 5.0"
+  count  = var.create_ecs_cluster ? 1 : 0
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=6b52c965734d95767d8e20d965afcd0db29dae5e" # v5.11.2
 
   cluster_name = var.name
 

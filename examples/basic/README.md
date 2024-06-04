@@ -17,7 +17,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_agent_pool"></a> [agent\_pool](#module\_agent\_pool) | ../../ | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/terraform-aws-modules/terraform-aws-vpc | 25322b6b6be69db6cca7f167d7b0e5327156a595 |
 
 ## Resources
 
