@@ -32,12 +32,16 @@ post_entrypoint() {
 #********** Pre-entrypoint helper *************
 pre_entrypoint
 
-#********** Checkov Analysis *************
-echo "Running Checkov Analysis"
-terraform init
-terraform plan -out tf.plan
-terraform show -json tf.plan  > tf.json
-checkov --config-file ${PROJECT_PATH}/.config/checkov.yml
+#********** Functional Test *************
+/bin/bash ${PROJECT_PATH}/.project_automation/functional_tests/functional_tests.sh
+if [ $? -eq 0 ]
+then
+    echo "Functional test completed"
+    EXIT_CODE=0
+else
+    echo "Functional test failed"
+    EXIT_CODE=1
+fi
 
 #********** Post-entrypoint helper *************
 post_entrypoint
