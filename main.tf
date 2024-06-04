@@ -29,6 +29,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
   cpu                      = var.agent_cpu
   memory                   = var.agent_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
@@ -42,8 +43,6 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
         name : "hcp-terraform"
         image : var.agent_image
         essential : true
-        cpu : 0
-        memory : 256
         logConfiguration : {
           logDriver : "awslogs",
           options : {
