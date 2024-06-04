@@ -5,6 +5,12 @@ variable "name" {
   description = "A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account."
 }
 
+variable "tags" {
+  description = "Map of tags to apply to resources deployed by this solution."
+  type        = map(any)
+  default     = null
+}
+
 ### HashiCorp Cloud Platform
 
 variable "hcp_terraform_address" {

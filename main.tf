@@ -17,11 +17,13 @@ resource "aws_ssm_parameter" "agent_token" {
   description = "HCP Terraform agent token"
   type        = "SecureString"
   value       = var.create_tfe_agent_pool ? tfe_agent_token.ecs_agent_token[0].token : var.tfe_agent_token
+  tags        = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
   name              = "/hcp/hcp-terraform-agents/ecs/${var.name}"
   retention_in_days = var.cloudwatch_log_group_retention
+  tags              = var.tags
 }
 
 resource "aws_ecs_task_definition" "hcp_terraform_agent" {
@@ -83,6 +85,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
       }
     ]
   )
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "hcp_terraform_agent" {
@@ -114,9 +117,11 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
     }
   }
 
-  tags = {
-    Name = "hcp-terraform-agent-${var.hcp_terraform_org_name}-${var.name}"
-  }
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-agent-${var.hcp_terraform_org_name}-${var.name}"
+    }
+  )
 }
 
 moved {
@@ -131,6 +136,7 @@ resource "aws_security_group" "hcp_terraform_agent" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = var.tags
 }
 
 #tfsec:ignore:no-public-egress-sgr
@@ -169,9 +175,11 @@ module "ecs_cluster" {
     }
   }
 
-  tags = {
-    Name = var.name
-  }
+  tags = merge(var.tags,
+    {
+      Name = var.name
+    }
+  )
 }
 
 #####################################################################################
@@ -194,9 +202,13 @@ data "aws_iam_policy_document" "agent_assume_role_policy" {
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "${var.name}-ecsTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.agent_assume_role_policy.json
-  tags = {
-    Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskExecutionRole"
-  }
+
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskExecutionRole"
+    }
+  )
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
@@ -221,9 +233,13 @@ resource "aws_iam_role_policy" "agent_init_policy" {
 resource "aws_iam_role" "ecs_task_role" {
   name               = "${var.name}-ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.agent_assume_role_policy.json
-  tags = {
-    Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskRole"
-  }
+
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskRole"
+    }
+  )
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_role_policy_attachment" {
