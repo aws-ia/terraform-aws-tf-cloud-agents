@@ -59,7 +59,7 @@ HCP Terraform allows you to manage isolated, private, or on-premises infrastruct
 |------|-------------|------|---------|:--------:|
 | <a name="input_hcp_terraform_org_name"></a> [hcp\_terraform\_org\_name](#input\_hcp\_terraform\_org\_name) | The name of the HCP Terraform or HCP Terraform Enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account. | `string` | n/a | yes |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of the subnet(s) where agents can be deployed (public subnets required) | `list(string)` | n/a | yes |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of the subnet(s) where agents can be deployed | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC where the cluster is running. | `string` | n/a | yes |
 | <a name="input_agent_auto_update"></a> [agent\_auto\_update](#input\_agent\_auto\_update) | Whether the agent should auto-update. Valid values are minor, patch, and disabled. | `string` | `"minor"` | no |
 | <a name="input_agent_cidr_blocks"></a> [agent\_cidr\_blocks](#input\_agent\_cidr\_blocks) | CIDR blocks to allow the agent to communicate with the HCP Terraform instance. | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |

@@ -187,7 +187,7 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "IDs of the subnet(s) where agents can be deployed (public subnets required)"
+  description = "IDs of the subnet(s) where agents can be deployed"
   validation {
     condition = alltrue([
       for i in var.subnet_ids : can(regex("^subnet-[a-zA-Z0-9]+$", i))

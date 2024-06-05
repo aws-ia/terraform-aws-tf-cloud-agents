@@ -161,7 +161,7 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
   }
 
   network_configuration {
-    assign_public_ip = "true"
+    assign_public_ip = "false"
     security_groups  = [aws_security_group.hcp_terraform_agent.id]
     subnets          = var.subnet_ids
   }

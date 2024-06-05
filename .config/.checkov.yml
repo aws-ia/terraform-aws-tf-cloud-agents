@@ -8,7 +8,6 @@ skip-check:
 - CKV2_GCP*
 - CKV_AZURE*
 - CKV2_AZURE*
-- CKV_AWS_333
 summary-position: bottom
 output: 'cli'
 compact: True
