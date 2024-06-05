@@ -162,8 +162,8 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
 
   network_configuration {
     assign_public_ip = "true"
-    security_groups = [aws_security_group.hcp_terraform_agent.id]
-    subnets         = var.subnet_ids
+    security_groups  = [aws_security_group.hcp_terraform_agent.id]
+    subnets          = var.subnet_ids
   }
 
   lifecycle {
@@ -279,8 +279,8 @@ data "aws_iam_policy_document" "ssm_access_policy" {
 }
 
 resource "aws_iam_role_policy" "ssm_access_policy" {
-  name = "ssm-access-policy"
-  role = aws_iam_role.ecs_task_execution_role.name
+  name   = "ssm-access-policy"
+  role   = aws_iam_role.ecs_task_execution_role.name
   policy = data.aws_iam_policy_document.ssm_access_policy.json
 }
 
