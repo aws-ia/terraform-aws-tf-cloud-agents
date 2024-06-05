@@ -31,7 +31,7 @@ module "agent_pool" {
   agent_memory           = 2048
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.vpc.private_subnets
-  task_policy_arns       = ["arn:aws:iam::aws:policy/PowerUserAccess"]
+  task_policy_arns       = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 }
 
 #####################################################################################
