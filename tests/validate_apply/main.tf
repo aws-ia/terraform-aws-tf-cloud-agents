@@ -21,7 +21,13 @@ resource "tfe_workspace" "test" {
   }
 }
 
+resource "tfe_agent_pool_allowed_workspaces" "test" {
+  agent_pool_id         = var.tfe_agent_pool
+  allowed_workspace_ids = [tfe_workspace.test.id]
+}
+
 resource "tfe_workspace_settings" "test" {
+  depends_on     = [tfe_agent_pool_allowed_workspaces.test]
   workspace_id   = tfe_workspace.test.id
   agent_pool_id  = var.tfe_agent_pool
   execution_mode = "agent"
