@@ -1,4 +1,5 @@
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 resource "tfe_agent_pool" "ecs_agent_pool" {
   count               = var.create_tfe_agent_pool ? 1 : 0
@@ -18,12 +19,66 @@ resource "aws_ssm_parameter" "agent_token" {
   description = "HCP Terraform agent token"
   type        = "SecureString"
   value       = var.create_tfe_agent_pool ? tfe_agent_token.ecs_agent_token[0].token : var.tfe_agent_token
+  key_id      = local.key_id
   tags        = var.tags
 }
+
+resource "aws_kms_key" "log_ssm_key" {
+  count                   = var.kms_key_arn == "" ? 1 : 0
+  description             = "KMS key to encrypt the Log groups and SSM parameters"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.kms_key_policy[0].json
+}
+
+data "aws_iam_policy_document" "kms_key_policy" {
+  count = var.kms_key_arn == "" ? 1 : 0
+  statement {
+    sid    = "Allow access to the key"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions = [
+      "kms:*",
+    ]
+    resources = [
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+    ]
+  }
+  statement {
+    sid    = "Allow CloudWatch logs and SSM access to the key"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = [
+        "logs.${data.aws_region.current.name}.amazonaws.com",
+        "ssm.amazonaws.com"
+      ]
+    }
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = [
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+    ]
+  }
+}
+
+locals {
+  key_id = var.kms_key_arn == "" ? aws_kms_key.log_ssm_key[0].arn : var.kms_key_arn
+}
+
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
   name              = "/hcp/hcp-terraform-agents/ecs/${var.name}"
   retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = local.key_id
   tags              = var.tags
 }
 
@@ -107,8 +162,8 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
 
   network_configuration {
     assign_public_ip = "true"
-    security_groups  = [aws_security_group.hcp_terraform_agent.id]
-    subnets          = var.subnet_ids
+    security_groups = [aws_security_group.hcp_terraform_agent.id]
+    subnets         = var.subnet_ids
   }
 
   lifecycle {
@@ -209,6 +264,24 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+data "aws_iam_policy_document" "ssm_access_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = [
+      local.key_id
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ssm_access_policy" {
+  name = "ssm-access-policy"
+  role = aws_iam_role.ecs_task_execution_role.name
+  policy = data.aws_iam_policy_document.ssm_access_policy.json
 }
 
 data "aws_iam_policy_document" "agent_init_policy" {

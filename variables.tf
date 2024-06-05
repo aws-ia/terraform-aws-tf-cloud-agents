@@ -139,7 +139,11 @@ variable "create_cloudwatch_log_group" {
 variable "cloudwatch_log_group_retention" {
   type        = number
   description = "The number of days to retain logs in the CloudWatch log group."
-  default     = 7
+  default     = 365
+  validation {
+    condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, 0], var.cloudwatch_log_group_retention)
+    error_message = "Valid values for var: cloudwatch_log_group_retention are (1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, and 0)."
+  }
 }
 
 variable "cloudwatch_log_group_name" {
@@ -196,4 +200,11 @@ variable "task_policy_arns" {
   type        = list(string)
   description = "ARN(s) of IAM policies to attach to the agent task. Determines what actions the agent can take without requiring additional AWS credentials."
   default     = []
+}
+
+
+variable "kms_key_arn" {
+  description = "The ARN of the KMS key to create. If empty, a new key will be created."
+  type        = string
+  default     = ""
 }
