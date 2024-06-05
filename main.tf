@@ -1,9 +1,10 @@
 data "aws_region" "current" {}
 
 resource "tfe_agent_pool" "ecs_agent_pool" {
-  count        = var.create_tfe_agent_pool ? 1 : 0
-  name         = "${var.name}-agent-pool"
-  organization = var.hcp_terraform_org_name
+  count               = var.create_tfe_agent_pool ? 1 : 0
+  name                = "${var.name}-agent-pool"
+  organization        = var.hcp_terraform_org_name
+  organization_scoped = false # always explicitly specify the workspace or override by customer
 }
 
 resource "tfe_agent_token" "ecs_agent_token" {
@@ -122,11 +123,6 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
       Name = "hcp-terraform-agent-${var.hcp_terraform_org_name}-${var.name}"
     }
   )
-}
-
-moved {
-  from = aws_ecs_service.hcp-terraform-agent
-  to   = aws_ecs_service.hcp_terraform_agent
 }
 
 resource "aws_security_group" "hcp_terraform_agent" {
