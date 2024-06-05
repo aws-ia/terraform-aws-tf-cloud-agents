@@ -76,6 +76,7 @@ locals {
 
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
+  count             = var.create_cloudwatch_log_group ? 1 : 0
   name              = "/hcp/hcp-terraform-agents/ecs/${var.name}"
   retention_in_days = var.cloudwatch_log_group_retention
   kms_key_id        = local.key_id
@@ -105,7 +106,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           logDriver : "awslogs",
           options : {
             awslogs-create-group : "true",
-            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
+            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch[0].name : var.cloudwatch_log_group_name
             awslogs-region : data.aws_region.current.name
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }
