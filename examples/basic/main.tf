@@ -14,6 +14,7 @@ locals {
   tags = {
     Terraform   = "true"
     Environment = "dev"
+    ManagedBy   = "aws-ia/terraform-aws-tf-cloud-agents"
   }
 }
 
