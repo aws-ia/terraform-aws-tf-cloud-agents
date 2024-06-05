@@ -30,6 +30,7 @@ module "agent_pool" {
   use_spot_instances     = true
   agent_cpu              = 512
   agent_memory           = 2048
+  num_agents             = 1
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.vpc.private_subnets
   task_policy_arns       = ["arn:aws:iam::aws:policy/AdministratorAccess"]
