@@ -1,9 +1,11 @@
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 resource "tfe_agent_pool" "ecs_agent_pool" {
-  count        = var.create_tfe_agent_pool ? 1 : 0
-  name         = "${var.name}-agent-pool"
-  organization = var.hcp_terraform_org_name
+  count               = var.create_tfe_agent_pool ? 1 : 0
+  name                = "${var.name}-agent-pool"
+  organization        = var.hcp_terraform_org_name
+  organization_scoped = false # always explicitly specify the workspace or override by customer
 }
 
 resource "tfe_agent_token" "ecs_agent_token" {
@@ -17,11 +19,68 @@ resource "aws_ssm_parameter" "agent_token" {
   description = "HCP Terraform agent token"
   type        = "SecureString"
   value       = var.create_tfe_agent_pool ? tfe_agent_token.ecs_agent_token[0].token : var.tfe_agent_token
+  key_id      = local.key_id
+  tags        = var.tags
 }
 
+resource "aws_kms_key" "log_ssm_key" {
+  count                   = var.kms_key_arn == "" ? 1 : 0
+  description             = "KMS key to encrypt the Log groups and SSM parameters"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.kms_key_policy[0].json
+}
+
+data "aws_iam_policy_document" "kms_key_policy" {
+  count = var.kms_key_arn == "" ? 1 : 0
+  statement {
+    sid    = "Allow access to the key"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions = [
+      "kms:*",
+    ]
+    resources = [
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+    ]
+  }
+  statement {
+    sid    = "Allow CloudWatch logs and SSM access to the key"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = [
+        "logs.${data.aws_region.current.name}.amazonaws.com",
+        "ssm.amazonaws.com"
+      ]
+    }
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = [
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+    ]
+  }
+}
+
+locals {
+  key_id = var.kms_key_arn == "" ? aws_kms_key.log_ssm_key[0].arn : var.kms_key_arn
+}
+
+
 resource "aws_cloudwatch_log_group" "cloudwatch" {
-  name              = "/ecs/hcp-terraform-agents/${var.name}"
+  count             = var.create_cloudwatch_log_group ? 1 : 0
+  name              = "/hcp/hcp-terraform-agents/ecs/${var.name}"
   retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = local.key_id
+  tags              = var.tags
 }
 
 resource "aws_ecs_task_definition" "hcp_terraform_agent" {
@@ -29,6 +88,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
   cpu                      = var.agent_cpu
   memory                   = var.agent_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
@@ -42,13 +102,11 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
         name : "hcp-terraform"
         image : var.agent_image
         essential : true
-        cpu : 0
-        memory : 256
         logConfiguration : {
           logDriver : "awslogs",
           options : {
             awslogs-create-group : "true",
-            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch.name : var.cloudwatch_log_group_name
+            awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch[0].name : var.cloudwatch_log_group_name
             awslogs-region : data.aws_region.current.name
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }
@@ -84,6 +142,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
       }
     ]
   )
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "hcp_terraform_agent" {
@@ -103,7 +162,7 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
   }
 
   network_configuration {
-    assign_public_ip = "true"
+    assign_public_ip = "false"
     security_groups  = [aws_security_group.hcp_terraform_agent.id]
     subnets          = var.subnet_ids
   }
@@ -115,14 +174,11 @@ resource "aws_ecs_service" "hcp_terraform_agent" {
     }
   }
 
-  tags = {
-    Name = "hcp-terraform-agent-${var.hcp_terraform_org_name}-${var.name}"
-  }
-}
-
-moved {
-  from = aws_ecs_service.hcp-terraform-agent
-  to   = aws_ecs_service.hcp_terraform_agent
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-agent-${var.hcp_terraform_org_name}-${var.name}"
+    }
+  )
 }
 
 resource "aws_security_group" "hcp_terraform_agent" {
@@ -132,6 +188,7 @@ resource "aws_security_group" "hcp_terraform_agent" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = var.tags
 }
 
 #tfsec:ignore:no-public-egress-sgr
@@ -151,9 +208,8 @@ resource "aws_security_group_rule" "allow_egress" {
 #####################################################################################
 
 module "ecs_cluster" {
-  count   = var.create_ecs_cluster ? 1 : 0
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 5.0"
+  count  = var.create_ecs_cluster ? 1 : 0
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=6b52c965734d95767d8e20d965afcd0db29dae5e" # v5.11.2
 
   cluster_name = var.name
 
@@ -161,7 +217,6 @@ module "ecs_cluster" {
     FARGATE = {
       default_capacity_provider_strategy = {
         weight = 50
-        base   = 20
       }
     }
     FARGATE_SPOT = {
@@ -171,9 +226,11 @@ module "ecs_cluster" {
     }
   }
 
-  tags = {
-    Name = var.name
-  }
+  tags = merge(var.tags,
+    {
+      Name = var.name
+    }
+  )
 }
 
 #####################################################################################
@@ -196,14 +253,36 @@ data "aws_iam_policy_document" "agent_assume_role_policy" {
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "${var.name}-ecsTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.agent_assume_role_policy.json
-  tags = {
-    Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskExecutionRole"
-  }
+
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskExecutionRole"
+    }
+  )
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+data "aws_iam_policy_document" "ssm_access_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = [
+      local.key_id
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ssm_access_policy" {
+  name   = "ssm-access-policy"
+  role   = aws_iam_role.ecs_task_execution_role.name
+  policy = data.aws_iam_policy_document.ssm_access_policy.json
 }
 
 data "aws_iam_policy_document" "agent_init_policy" {
@@ -223,9 +302,13 @@ resource "aws_iam_role_policy" "agent_init_policy" {
 resource "aws_iam_role" "ecs_task_role" {
   name               = "${var.name}-ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.agent_assume_role_policy.json
-  tags = {
-    Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskRole"
-  }
+
+  tags = merge(var.tags,
+    {
+      Name = "hcp-terraform-${var.hcp_terraform_org_name}-${var.name}-ecsTaskRole"
+    }
+  )
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_role_policy_attachment" {

@@ -1,11 +1,21 @@
+### General
+
 variable "name" {
   type        = string
   description = "A name to apply to resources. The combination of `name` and `hcp_terraform_org_name` must be unique within an AWS account."
 }
 
+variable "tags" {
+  description = "Map of tags to apply to resources deployed by this solution."
+  type        = map(any)
+  default     = null
+}
+
+### HashiCorp Cloud Platform
+
 variable "hcp_terraform_address" {
   type        = string
-  description = "The HTTPS address of the HCP Terraform or HCP Terraform enterprise instance."
+  description = "The HTTPS address of the HCP Terraform or HCP Terraform Enterprise instance."
   default     = "https://app.terraform.io"
   validation {
     condition     = startswith(var.hcp_terraform_address, "https://")
@@ -15,8 +25,29 @@ variable "hcp_terraform_address" {
 
 variable "hcp_terraform_org_name" {
   type        = string
-  description = "The name of the HCP Terraform or HCP Terraform enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
+  description = "The name of the HCP Terraform or HCP Terraform Enterprise organization where the agent pool will be configured. The combination of `hcp_terraform_org_name` and `name` must be unique within an AWS account."
 }
+
+variable "create_tfe_agent_pool" {
+  type        = bool
+  default     = true
+  description = "Whether to omit agent pool/token creation"
+}
+
+variable "tfe_agent_token" {
+  type        = string
+  default     = ""
+  description = "Terraform agent token to be used when agent creation is omitted"
+  sensitive   = true
+}
+
+variable "tfe_agent_pool_name" {
+  type        = string
+  default     = ""
+  description = "Terraform agent pool name to be used when agent creation is omitted"
+}
+
+### Terraform Agent
 
 variable "agent_cpu" {
   type        = number
@@ -97,23 +128,31 @@ variable "num_agents" {
   default     = 1
 }
 
+### CloudWatch configuration
+
 variable "create_cloudwatch_log_group" {
   type        = bool
-  description = "The name of the CloudWatch log group where agent logs will be sent."
+  description = "Whether the CloudWatch log group should be created."
   default     = true
 }
 
 variable "cloudwatch_log_group_retention" {
   type        = number
   description = "The number of days to retain logs in the CloudWatch log group."
-  default     = 7
+  default     = 365
+  validation {
+    condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, 0], var.cloudwatch_log_group_retention)
+    error_message = "Valid values for var: cloudwatch_log_group_retention are (1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, and 0)."
+  }
 }
 
 variable "cloudwatch_log_group_name" {
   type        = string
   description = "The name of the CloudWatch log group where agent logs will be sent."
-  default     = "/ecs/hcp-terraform-agent"
+  default     = "/hcp/hcp-terraform-agent"
 }
+
+### ECS Cluster configuration
 
 variable "create_ecs_cluster" {
   type        = bool
@@ -148,7 +187,7 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "IDs of the subnet(s) where agents can be deployed (public subnets required)"
+  description = "IDs of the subnet(s) where agents can be deployed"
   validation {
     condition = alltrue([
       for i in var.subnet_ids : can(regex("^subnet-[a-zA-Z0-9]+$", i))
@@ -163,21 +202,9 @@ variable "task_policy_arns" {
   default     = []
 }
 
-variable "create_tfe_agent_pool" {
-  type        = bool
-  default     = true
-  description = "Option to omit agent pool/token creation"
-}
 
-variable "tfe_agent_token" {
+variable "kms_key_arn" {
+  description = "The ARN of the KMS key to create. If empty, a new key will be created."
   type        = string
   default     = ""
-  description = "Terraform agent token to be used when agent creation is omitted"
-  sensitive   = true
-}
-
-variable "tfe_agent_pool_name" {
-  type        = string
-  default     = ""
-  description = "Terraform agent pool name to be used when agent creation is omitted"
 }

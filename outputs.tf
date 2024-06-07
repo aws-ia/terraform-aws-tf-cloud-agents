@@ -47,3 +47,8 @@ output "task_role_arn" {
   description = "ARN of the IAM role attached to the task containers."
   value       = aws_iam_role.ecs_task_role.arn
 }
+
+output "kms_key_arn" {
+  description = "The ARN of the created KMS key"
+  value       = try(aws_kms_key.log_ssm_key[0].arn, null)
+}

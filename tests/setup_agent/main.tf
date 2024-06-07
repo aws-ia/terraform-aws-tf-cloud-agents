@@ -14,7 +14,6 @@ locals {
   tags = {
     Terraform   = "true"
     Environment = "dev"
-    ManagedBy   = "aws-ia/terraform-aws-tf-cloud-agents"
   }
 }
 
@@ -30,11 +29,9 @@ module "agent_pool" {
   use_spot_instances     = true
   agent_cpu              = 512
   agent_memory           = 2048
-  num_agents             = 1
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.vpc.private_subnets
-  task_policy_arns       = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
-  tags                   = local.tags
+  task_policy_arns       = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 }
 
 #####################################################################################

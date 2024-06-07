@@ -1,4 +1,10 @@
 <!-- BEGIN_TF_DOCS -->
+# Create Terraform Cloud Agent and ECS Cluster
+
+This example show how you can run the module to launch dedicated ECS cluster for Terraform Cloud Agent. You need to specify VPC ID which is created via separate VPC module.
+
+On this example, the ECS Task role will use `arn:aws:iam::aws:policy/ReadOnlyAccess` as it's managed policy. You need to modify this to fit your requirements.
+
 ## Requirements
 
 | Name | Version |
@@ -17,7 +23,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_agent_pool"></a> [agent\_pool](#module\_agent\_pool) | ../../ | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/terraform-aws-modules/terraform-aws-vpc | 25322b6b6be69db6cca7f167d7b0e5327156a595 |
 
 ## Resources
 
