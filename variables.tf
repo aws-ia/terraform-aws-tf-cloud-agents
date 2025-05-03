@@ -210,6 +210,6 @@ variable "kms_key_arn" {
 
 variable "assign_public_ip" {
   type        = bool
-  description = "Whether to assign a public IP address to the ECS tasks. Set to true when using public subnets."
+  description = "Whether to assign a public IP address to the ECS tasks. Set to true when using public subnets"
   default     = false
 }
