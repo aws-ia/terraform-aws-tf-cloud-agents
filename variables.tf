@@ -202,9 +202,14 @@ variable "task_policy_arns" {
   default     = []
 }
 
-
 variable "kms_key_arn" {
   description = "The ARN of the KMS key to create. If empty, a new key will be created."
   type        = string
   default     = ""
+}
+
+variable "assign_public_ip" {
+  type        = bool
+  description = "Whether to assign a public IP address to the ECS tasks. Set to true when using public subnets."
+  default     = false
 }
