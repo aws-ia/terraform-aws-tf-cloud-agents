@@ -76,7 +76,6 @@ Please refer to the [examples](./examples/basic) on how to get started.
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of the subnet(s) where agents can be deployed | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC where the cluster is running. | `string` | n/a | yes |
 | <a name="input_agent_auto_update"></a> [agent\_auto\_update](#input\_agent\_auto\_update) | Whether the agent should auto-update. Valid values are minor, patch, and disabled. | `string` | `"minor"` | no |
-| <a name="input_assign_public_ip"></a> [assign\_public\_ip](#input\_assign\_public\_ip) | Whether to assign a public IP address to the ECS tasks. Set to true when using public subnets. | `bool` | `false` | no |
 | <a name="input_agent_cidr_blocks"></a> [agent\_cidr\_blocks](#input\_agent\_cidr\_blocks) | CIDR blocks to allow the agent to communicate with the HCP Terraform instance. | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_agent_cpu"></a> [agent\_cpu](#input\_agent\_cpu) | The CPU units allocated to the agent container(s). See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size | `number` | `256` | no |
 | <a name="input_agent_egress_ports"></a> [agent\_egress\_ports](#input\_agent\_egress\_ports) | Egress ports to allow the agent to communicate with the HCP Terraform instance. | `set(string)` | <pre>[<br>  "443",<br>  "7146"<br>]</pre> | no |
