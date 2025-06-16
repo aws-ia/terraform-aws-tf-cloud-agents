@@ -53,6 +53,7 @@ Please refer to the [examples](./examples/basic) on how to get started.
 | [aws_iam_role_policy.agent_init_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy.ssm_access_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.ecs_task_execution_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ecs_task_execution_role_policy_attachments](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.ecs_task_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_kms_key.log_ssm_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_security_group.hcp_terraform_agent](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
@@ -91,10 +92,12 @@ Please refer to the [examples](./examples/basic) on how to get started.
 | <a name="input_create_tfe_agent_pool"></a> [create\_tfe\_agent\_pool](#input\_create\_tfe\_agent\_pool) | Whether to omit agent pool/token creation | `bool` | `true` | no |
 | <a name="input_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#input\_ecs\_cluster\_arn) | ARN of the ECS cluster where the agent will be deployed. | `string` | `"arn:aws:ecs:us-west-2:000000000000:cluster/ecs-basic"` | no |
 | <a name="input_extra_env_vars"></a> [extra\_env\_vars](#input\_extra\_env\_vars) | Extra environment variables to pass to the agent container. | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `[]` | no |
+| <a name="input_extra_secrets"></a> [extra\_secrets](#input\_extra\_secrets) | Extra secrets to pass to the agent container. | <pre>list(object({<br>    name      = string<br>    valueFrom = string<br>  }))</pre> | `[]` | no |
 | <a name="input_hcp_terraform_address"></a> [hcp\_terraform\_address](#input\_hcp\_terraform\_address) | The HTTPS address of the HCP Terraform or HCP Terraform Enterprise instance. | `string` | `"https://app.terraform.io"` | no |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | The ARN of the KMS key to create. If empty, a new key will be created. | `string` | `""` | no |
 | <a name="input_num_agents"></a> [num\_agents](#input\_num\_agents) | The number of agent containers to run. | `number` | `1` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to apply to resources deployed by this solution. | `map(any)` | `null` | no |
+| <a name="input_task_execution_policy_arns"></a> [task\_execution\_policy\_arns](#input\_task\_execution\_policy\_arns) | ARN(s) of IAM policies to attach to the agent task execution role. | `list(string)` | `[]` | no |
 | <a name="input_task_policy_arns"></a> [task\_policy\_arns](#input\_task\_policy\_arns) | ARN(s) of IAM policies to attach to the agent task. Determines what actions the agent can take without requiring additional AWS credentials. | `list(string)` | `[]` | no |
 | <a name="input_tfe_agent_pool_name"></a> [tfe\_agent\_pool\_name](#input\_tfe\_agent\_pool\_name) | Terraform agent pool name to be used when agent creation is omitted | `string` | `""` | no |
 | <a name="input_tfe_agent_token"></a> [tfe\_agent\_token](#input\_tfe\_agent\_token) | Terraform agent token to be used when agent creation is omitted | `string` | `""` | no |
