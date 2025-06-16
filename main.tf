@@ -133,12 +133,12 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
             value = var.agent_auto_update
           }
         ], var.extra_env_vars),
-        secrets = [
+        secrets = concat([
           {
             name      = "TFC_AGENT_TOKEN",
             valueFrom = aws_ssm_parameter.agent_token.arn
           }
-        ]
+        ], var.extra_secrets)
       }
     ]
   )
@@ -297,6 +297,13 @@ resource "aws_iam_role_policy" "agent_init_policy" {
   role   = aws_iam_role.ecs_task_execution_role.name
   name   = "AccessSSMforAgentToken"
   policy = data.aws_iam_policy_document.agent_init_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachments" {
+  for_each = toset(var.task_execution_policy_arns)
+
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = each.key
 }
 
 resource "aws_iam_role" "ecs_task_role" {

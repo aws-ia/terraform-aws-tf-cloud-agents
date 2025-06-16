@@ -122,6 +122,15 @@ variable "extra_env_vars" {
   default     = []
 }
 
+variable "extra_secrets" {
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
+  description = "Extra secrets to pass to the agent container."
+  default     = []
+}
+
 variable "num_agents" {
   type        = number
   description = "The number of agent containers to run."
@@ -202,6 +211,11 @@ variable "task_policy_arns" {
   default     = []
 }
 
+variable "task_execution_policy_arns" {
+  type        = list(string)
+  description = "ARN(s) of IAM policies to attach to the agent task execution role."
+  default     = []
+}
 
 variable "kms_key_arn" {
   description = "The ARN of the KMS key to create. If empty, a new key will be created."
