@@ -25,14 +25,14 @@ Please refer to the [examples](./examples/basic) on how to get started.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0.0 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.54 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0.0 |
 | <a name="provider_tfe"></a> [tfe](#provider\_tfe) | >= 0.54 |
 
 ## Modules
