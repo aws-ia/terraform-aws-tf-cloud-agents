@@ -85,6 +85,16 @@ variable "agent_image" {
   default     = "hashicorp/tfc-agent:latest"
 }
 
+variable "cpu_architecture" {
+  type        = string
+  description = "The CPU architecture for the ECS task. Valid values are X86_64 and ARM64."
+  default     = "X86_64"
+  validation {
+    condition     = contains(["X86_64", "ARM64"], var.cpu_architecture)
+    error_message = "Valid values: X86_64, ARM64"
+  }
+}
+
 variable "agent_single_execution" {
   type        = bool
   description = "Whether to use single-execution mode."
