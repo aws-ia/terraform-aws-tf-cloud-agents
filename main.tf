@@ -210,8 +210,7 @@ resource "aws_security_group_rule" "allow_egress" {
 
 module "ecs_cluster" {
   count  = var.create_ecs_cluster ? 1 : 0
-  source = "terraform-aws-modules/ecs/aws"
-  version = "~> 6.6"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=be968fc4af733fae2ac41dfb3c34dce7712e028f" # v6.6.1
 
   cluster_name = var.name
 
