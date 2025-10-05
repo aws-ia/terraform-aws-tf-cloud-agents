@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:*",
     ]
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:aws:kms:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
   }
   statement {
@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
     principals {
       type = "Service"
       identifiers = [
-        "logs.${data.aws_region.current.name}.amazonaws.com",
+        "logs.${data.aws_region.current.id}.amazonaws.com",
         "ssm.amazonaws.com"
       ]
     }
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:Describe*"
     ]
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:aws:kms:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
   }
 }
@@ -94,6 +94,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
 
   runtime_platform {
     operating_system_family = "LINUX"
+    cpu_architecture        = var.cpu_architecture
   }
 
   container_definitions = jsonencode(
@@ -107,7 +108,7 @@ resource "aws_ecs_task_definition" "hcp_terraform_agent" {
           options : {
             awslogs-create-group : "true",
             awslogs-group : var.create_cloudwatch_log_group ? aws_cloudwatch_log_group.cloudwatch[0].name : var.cloudwatch_log_group_name
-            awslogs-region : data.aws_region.current.name
+            awslogs-region : data.aws_region.current.id
             awslogs-stream-prefix : "hcp-tf-${var.hcp_terraform_org_name}-${var.name}"
           }
         }
@@ -209,20 +210,16 @@ resource "aws_security_group_rule" "allow_egress" {
 
 module "ecs_cluster" {
   count  = var.create_ecs_cluster ? 1 : 0
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=6b52c965734d95767d8e20d965afcd0db29dae5e" # v5.11.2
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=be968fc4af733fae2ac41dfb3c34dce7712e028f" # v6.6.1
 
   cluster_name = var.name
 
-  fargate_capacity_providers = {
+  default_capacity_provider_strategy = {
     FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
+      weight = var.use_spot_instances ? 0 : 100
     }
     FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
+      weight = var.use_spot_instances ? 100 : 0
     }
   }
 
