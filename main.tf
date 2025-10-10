@@ -209,20 +209,16 @@ resource "aws_security_group_rule" "allow_egress" {
 
 module "ecs_cluster" {
   count  = var.create_ecs_cluster ? 1 : 0
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=6b52c965734d95767d8e20d965afcd0db29dae5e" # v5.11.2
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs?ref=be968fc4af733fae2ac41dfb3c34dce7712e028f" # v6.6.1
 
   cluster_name = var.name
 
-  fargate_capacity_providers = {
+  default_capacity_provider_strategy = {
     FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
+      weight = 50
     }
     FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
+      weight = 50
     }
   }
 
